@@ -27,7 +27,7 @@ impl Post {
         let lo_title = self.title.to_lowercase().replace(" ", "-");
         let today_date_str = time::strftime("%Y-%m-%d-", &time::now()).unwrap();
 
-        format!("./{}{}.markdown", today_date_str, lo_title)
+        format!("../_posts/{}{}.markdown", today_date_str, lo_title)
     }
 }
 
