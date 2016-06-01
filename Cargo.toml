@@ -1,0 +1,9 @@
+[package]
+name = "rust_read_stdin"
+version = "0.1.0"
+authors = ["Sebastian Blei <s.blei@banking-partner.de>"]
+
+[dependencies]
+mustache = "*"
+time = "*"
+rustc-serialize = "*"
