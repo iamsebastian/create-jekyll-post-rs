@@ -1,9 +1,34 @@
 use std::io;
-use std::fs::File;
+use std::ffi::OsString;
+use std::fs;
+use std::fs::{DirEntry, File};
+use std::path::{Path,PathBuf};
 use std::io::prelude::*;
 extern crate rustc_serialize;
 extern crate mustache;
 extern crate time;
+
+#[derive(RustcEncodable)]
+struct Photo {
+    caption: String,
+    alt_text: String,
+    full_image_path: String,
+    image_path: String,
+}
+
+impl Photo {
+    fn new(path: &PathBuf, file_name: &OsString) -> Photo {
+        let path = path.to_str().unwrap();
+        let image_name = file_name.to_str().unwrap();
+
+        Photo {
+            caption: String::new(),
+            alt_text: String::new(),
+            full_image_path: String::new(),
+            image_path: String::new(),
+        }
+    }
+}
 
 #[derive(RustcEncodable)]
 struct Post {
@@ -11,6 +36,7 @@ struct Post {
     content: String,
     created: String,
     title: String,
+    photos: Vec<Photo>,
 }
 
 impl Post {
@@ -20,6 +46,7 @@ impl Post {
             content: String::new(),
             created: time::strftime("%Y-%m-%d %H:%M:%S +0100", &time::now()).unwrap(),
             title: "".to_owned(),
+            photos: Vec::new(),
         }
     }
 
@@ -27,8 +54,37 @@ impl Post {
         let lo_title = self.title.to_lowercase().replace(" ", "-");
         let today_date_str = time::strftime("%Y-%m-%d-", &time::now()).unwrap();
 
-        format!("../_posts/{}{}.markdown", today_date_str, lo_title)
+        format!("./_posts/{}{}.markdown", today_date_str, lo_title)
     }
+}
+
+fn look_for_photos(dir: &Path) -> Vec<Photo> {
+    let mut images: Vec<Photo> = Vec::new();
+    let mut img_filenames: Vec<String> = Vec::new();
+
+    let is_dir: bool = fs::metadata(dir).unwrap().is_dir();
+
+    if is_dir {
+        println!("Is directory: {}", dir.to_str().unwrap());
+
+        let dir_iter = fs::read_dir(dir).unwrap();
+
+        for entry in dir_iter {
+            let entry: DirEntry = entry.unwrap();
+            let file_name = entry.file_name().into_string().unwrap();
+
+            img_filenames.push(file_name);
+            let mut photo = Photo::new(&entry.path(), &entry.file_name());
+            images.push(photo);
+        }
+    }
+
+    let imgs: String = &img_filenames.into_iter().collect();
+
+    println!("Found images: {}", imgs);
+    //println!("Found images: {}", String::from_iter(img_filenames));
+
+    images
 }
 
 fn print_hint(placeholder: &str) {
@@ -42,6 +98,7 @@ fn init_post() -> Post {
     let mut cnt = 1;
     let stdin = io::stdin();
     let mut post = Post::new();
+    post.photos = look_for_photos(Path::new("./img/"));
 
     print_hint("title");
 

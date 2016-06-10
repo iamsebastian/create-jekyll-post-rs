@@ -5,3 +5,14 @@ date:   {{ created }}
 categories: {{ categories }}
 about: {{ about }}
 ---
+
+{{#photos}}
+<div class="post-image">
+  <a href="{{ full_image_path }}">
+    <img src="{{ image_path }}" alt="{{ alt_text }}" />
+  </a>
+  {{#caption}}
+  <p class="post-image-caption">{{ caption }}</p>
+  {{/caption}}
+</div>
+{{/photos}}

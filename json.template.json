@@ -1,0 +1,12 @@
+{
+  "photos": [ {
+    "caption": "xextion",
+    "alt_text": "Alternative Text",
+    "full_image_path": "foo.jpg",
+    "image_path": "foo_1024px.jpg"
+  } ],
+  "about": "json impliance",
+  "title": "JSON title",
+  "created": "2016-06-10 15:35:49 +0100",
+  "categories": "JSON, Markdown, Rust"
+}
