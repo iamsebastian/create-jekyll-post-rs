@@ -18,14 +18,14 @@ struct Photo {
 
 impl Photo {
     fn new(path: &PathBuf, file_name: &OsString) -> Photo {
-        let path = path.to_str().unwrap();
-        let image_name = file_name.to_str().unwrap();
+        let path = path.to_str().unwrap().to_owned();
+        let image_name = file_name.to_str().unwrap().to_owned();
 
         Photo {
             caption: String::new(),
             alt_text: String::new(),
-            full_image_path: String::new(),
-            image_path: String::new(),
+            full_image_path: path,
+            image_path: image_name,
         }
     }
 }
@@ -74,12 +74,12 @@ fn look_for_photos(dir: &Path) -> Vec<Photo> {
             let file_name = entry.file_name().into_string().unwrap();
 
             img_filenames.push(file_name);
-            let mut photo = Photo::new(&entry.path(), &entry.file_name());
+            let photo = Photo::new(&entry.path(), &entry.file_name());
             images.push(photo);
         }
     }
 
-    let imgs: String = &img_filenames.into_iter().collect();
+    let imgs: String = img_filenames.into_iter().collect();
 
     println!("Found images: {}", imgs);
     //println!("Found images: {}", String::from_iter(img_filenames));
@@ -150,7 +150,7 @@ fn handle_template(post: &Post) {
         Ok(f) => f,
     };
 
-    template = mustache::compile_str(&template_content);
+    template = mustache::compile_str(&template_content).expect("Could not render template content");
 
     template.render(&mut new_file, post).unwrap();
 
