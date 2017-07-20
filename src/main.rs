@@ -22,8 +22,8 @@ impl Photo {
         let image_name = file_name.to_str().unwrap().to_owned();
 
         Photo {
-            caption: String::new(),
-            alt_text: String::new(),
+            caption: "caption".to_owned(),
+            alt_text: "photo".to_owned(),
             full_image_path: path,
             image_path: image_name,
         }
