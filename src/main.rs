@@ -18,8 +18,8 @@ struct Photo {
 
 impl Photo {
     fn new(path: &PathBuf, file_name: &OsString) -> Photo {
-        let path = path.to_str().unwrap().to_owned();
-        let image_name = file_name.to_str().unwrap().to_owned();
+        let path = path.to_str().unwrap().to_owned().replace("./", "/");
+        let image_name = file_name.to_str().unwrap().to_owned().replace("./", "/");
 
         Photo {
             caption: "caption".to_owned(),
@@ -44,7 +44,7 @@ impl Post {
         Post {
             categories: "".to_owned(),
             content: String::new(),
-            created: time::strftime("%Y-%m-%d %H:%M:%S +0100", &time::now()).unwrap(),
+            created: time::strftime("%Y-%m-%d %H:%M:%S +0200", &time::now()).unwrap(),
             title: "".to_owned(),
             photos: Vec::new(),
         }
