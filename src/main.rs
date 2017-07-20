@@ -54,7 +54,7 @@ impl Post {
         let lo_title = self.title.to_lowercase().replace(" ", "-");
         let today_date_str = time::strftime("%Y-%m-%d-", &time::now()).unwrap();
 
-        format!("./_posts/{}{}.markdown", today_date_str, lo_title)
+        format!("../_posts/{}{}.markdown", today_date_str, lo_title)
     }
 }
 
@@ -144,6 +144,8 @@ fn handle_template(post: &Post) {
     if let Err(err) = post_template.read_to_string(&mut template_content) {
         panic!("{:?}", err);
     }
+
+    println!("Will create new file: {:?}", post.get_file_name());
 
     let mut new_file: File = match File::create(post.get_file_name()) {
         Err(y) => panic!("{:?}", y),
